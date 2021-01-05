@@ -7,11 +7,14 @@ import styled from 'styled-components';
 const GET_MOVIE = gql`
     query getMovie($id: Int!) {
         movie(id: $id) {
+            id
             title
             language
             rating
             description_intro
             medium_cover_image
+            # request to client
+            isLiked @client
         }
     }
 `;
@@ -63,17 +66,15 @@ const Detail = () => {
     return (
         <Container>
             <Column>
-                <Title>{loading ? 'Loading...' : `${data.movie.title}`}</Title>
-                {!loading && data.movie && (
-                    <>
-                        <Subtitle>
-                            {data.movie.language} · {data.movie.rating}
-                        </Subtitle>
-                        <Description>{data.movie.description_intro}</Description>
-                    </>
-                )}
+                <Title>
+                    {loading ? 'Loading...' : `${data.movie.title} ${data.movie.isLiked ? '🌈' : '🌧'}`}
+                </Title>
+                <Subtitle>
+                    {data?.movie?.language} · {data?.movie?.rating}
+                </Subtitle>
+                <Description>{data?.movie?.description_intro}</Description>
             </Column>
-            <Poster bg={data && data.movie ? data.movie.medium_cover_image : null}></Poster>
+            <Poster bg={data?.movie?.medium_cover_image}></Poster>
         </Container>
     );
 };
